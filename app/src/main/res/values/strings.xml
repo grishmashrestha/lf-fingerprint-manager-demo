@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">FingerprintAuthenticatedLogin</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="sign_in_with_fingerprint_next_time_you_login">Sign in with fingerprint next time you login</string>
+    <string name="login">Login</string>
+    <string name="welcome_back_user">Welcome back user!</string>
+    <string name="logout">Logout</string>
+    <string name="someuser">someuser</string>
+</resources>
