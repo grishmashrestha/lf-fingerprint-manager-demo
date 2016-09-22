@@ -37,7 +37,7 @@ import np.com.grishma.fingerprintauthenticatedlogin.server.UserImpl;
  */
 public class FingerprintLoginActivity extends AppCompatActivity implements FingerprintHandler.Callback {
 
-    @BindView(R.id.text_greetings)
+    @BindView(R.id.text_greetings_name)
     TextView textGreetings;
 
     private KeyStore keyStore;
@@ -76,7 +76,7 @@ public class FingerprintLoginActivity extends AppCompatActivity implements Finge
         FingerprintManager fingerprintManager = getSystemService(FingerprintManager.class);
 
         // set greetings text showing which user had last enabled the fingerprint authentication for login
-        textGreetings.setText("Login for " + sharedPreferences.getString("username", null));
+        textGreetings.setText(sharedPreferences.getString("username", ""));
 
         // initialize signature
         if (initSignature()) {
@@ -85,7 +85,7 @@ public class FingerprintLoginActivity extends AppCompatActivity implements Finge
             // start listener for fingerprint authentication
             handler.startAuth(fingerprintManager, cryptoObject);
         } else {
-            Toast.makeText(FingerprintLoginActivity.this, "Your previous key was invalidated", Toast.LENGTH_SHORT).show();
+            Toast.makeText(FingerprintLoginActivity.this, "A new fingerprint was added to this device, so please use normal login ", Toast.LENGTH_LONG).show();
 
             // handles instances where previous key was invalidated, reset saved data in shared preference
             SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -113,7 +113,6 @@ public class FingerprintLoginActivity extends AppCompatActivity implements Finge
             signature.initSign(key);
             return true;
         } catch (KeyPermanentlyInvalidatedException e) {
-            Log.e("InitSignature", e.getMessage());
             return false;
         } catch (KeyStoreException | CertificateException | UnrecoverableKeyException | IOException
                 | NoSuchAlgorithmException | InvalidKeyException e) {
@@ -158,7 +157,7 @@ public class FingerprintLoginActivity extends AppCompatActivity implements Finge
         Toast.makeText(FingerprintLoginActivity.this, "Try logging in with password", Toast.LENGTH_SHORT).show();
     }
 
-    @OnClick(R.id.text_sign_in_another_user)
+    @OnClick(R.id.button_sign_in_another_user)
     public void setOnClick(View view) {
         // redirect to normal login page if another user decides to login
         SharedPreferences.Editor editor = sharedPreferences.edit();

@@ -10,17 +10,21 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="np.com.grishma.fingerprintauthenticatedlogin.FingerprintLoginActivity">
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:src="@drawable/android_robot" />
-
     <TextView
         android:id="@+id/text_greetings"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:layout_marginTop="32dp"
+        android:text="@string/fingerprint_login_for"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/text_greetings_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="32dp"
         android:textSize="16sp" />
 
     <ImageView
@@ -39,14 +43,14 @@
         android:textSize="16sp" />
 
 
-    <TextView
-        android:id="@+id/text_sign_in_another_user"
-        android:layout_width="wrap_content"
+    <Button
+        android:id="@+id/button_sign_in_another_user"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="180dp"
-        android:textColor="@color/colorAccent"
-        android:text="@string/sign_in_as_another_user" />
-
-
+        android:background="@color/colorAccent"
+        android:text="@string/sign_in_as_another_user"
+        android:textColor="@android:color/white" />
+    
 </LinearLayout>

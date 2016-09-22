@@ -19,6 +19,9 @@ import java.util.Set;
 
 import np.com.grishma.fingerprintauthenticatedlogin.MainActivity;
 
+/**
+ * An implementation on {@link User} to represent a User and its related tasks to be performed for User login via remote server
+ */
 public class UserImpl implements User {
     private static final String TAG = "UserImpl";
     private final Map<String, PublicKey> publicKeys = new HashMap<>();
@@ -27,13 +30,10 @@ public class UserImpl implements User {
     @Override
     public boolean verify(String username, byte[] usernameSignature) {
         try {
-//            if (receivedUsername.contains(username)) {
-//                // It verifies the equality of the transaction including the client nonce
-//                // So attackers can't do replay attacks.
-//                return false;
-//            }
             receivedUsername.add(username);
-//            PublicKey publicKey = publicKeys.get(username);
+//          For now fetch public key from the device itself as we have not used any database to
+//          represent data being stored in server
+//          PublicKey publicKey = publicKeys.get(username);
             KeyStore keyStore = KeyStore.getInstance("AndroidKeyStore");
             keyStore.load(null);
             PublicKey publicKey = keyStore.getCertificate(MainActivity.KEY_NAME).getPublicKey();
