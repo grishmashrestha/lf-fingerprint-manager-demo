@@ -10,6 +10,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+/**
+ * Dashboard for user after successful login
+ */
 public class DashboardActivity extends AppCompatActivity {
 
     @BindView(R.id.text_greetings)

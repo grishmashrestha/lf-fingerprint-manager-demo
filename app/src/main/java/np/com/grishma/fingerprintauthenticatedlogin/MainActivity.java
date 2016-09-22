@@ -31,6 +31,9 @@ import butterknife.OnClick;
 import np.com.grishma.fingerprintauthenticatedlogin.server.User;
 import np.com.grishma.fingerprintauthenticatedlogin.server.UserImpl;
 
+/**
+ * Main activity
+ */
 public class MainActivity extends AppCompatActivity {
 
     public static final String KEY_NAME = "lf_fingerprint_auth";
