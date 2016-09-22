@@ -26,7 +26,7 @@ public class DashboardActivity extends AppCompatActivity {
         }
         String username = extras.getString("username");
         if (username != null) {
-            greetings.setText("Welcome back " + username + "!");
+            greetings.setText("Welcome back " + username + " to your dashboard!");
         }
 
     }
