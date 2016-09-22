@@ -86,7 +86,15 @@ public class MainActivity extends AppCompatActivity {
             throw new RuntimeException("Failed to get an instance of KeyPairGenerator", e);
         }
 
-        if (!keyguardManager.isKeyguardSecure()) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.USE_FINGERPRINT) != PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(MainActivity.this, "Please grant permission for Fingerprint access", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (!fingerprintManager.isHardwareDetected()) {
+            Toast.makeText(MainActivity.this, "Fingerprint hardware not detected", Toast.LENGTH_SHORT).show();
+            checkBoxFingerprintAuth.setVisibility(View.INVISIBLE);
+        } else if (!keyguardManager.isKeyguardSecure()) {
             // Show a message that the user hasn't set up a fingerprint or lock screen.
             Toast.makeText(this,
                     "Secure lock screen hasn't set up.\n"
@@ -94,10 +102,7 @@ public class MainActivity extends AppCompatActivity {
                     Toast.LENGTH_LONG).show();
             checkBoxFingerprintAuth.setVisibility(View.INVISIBLE);
             return;
-        }
-
-        //noinspection ResourceType
-        if (!fingerprintManager.hasEnrolledFingerprints()) {
+        } else if (!fingerprintManager.hasEnrolledFingerprints()) {
             checkBoxFingerprintAuth.setVisibility(View.INVISIBLE);
             // This happens when no fingerprints are registered.
             Toast.makeText(this,
