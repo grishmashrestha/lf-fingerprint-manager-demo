@@ -7,4 +7,6 @@
     <string name="welcome_back_user">Welcome back user!</string>
     <string name="logout">Logout</string>
     <string name="someuser">someuser</string>
+    <string name="touch_the_sensor_to_login">Touch the fingerprint sensor to login</string>
+    <string name="sign_in_as_another_user">Sign in as another user</string>
 </resources>

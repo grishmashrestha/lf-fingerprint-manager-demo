@@ -18,9 +18,9 @@
     <EditText
         android:id="@+id/edit_username"
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:labelFor="@id/edit_username"
-        android:text="@string/someuser"
-        android:layout_height="wrap_content" />
+        android:text="@string/someuser" />
 
     <TextView
         android:layout_width="match_parent"
@@ -30,10 +30,10 @@
     <EditText
         android:id="@+id/edit_password"
         android:layout_width="match_parent"
-        android:labelFor="@id/edit_password"
-        android:text="@string/password"
         android:layout_height="wrap_content"
-        android:inputType="textPassword" />
+        android:inputType="textPassword"
+        android:labelFor="@id/edit_password"
+        android:text="@string/password" />
 
     <CheckBox
         android:id="@+id/checkbox_fingerprint_authentication"
@@ -44,7 +44,11 @@
 
     <Button
         android:id="@+id/button_login"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/login" />
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:background="@color/colorAccent"
+        android:text="@string/login"
+        android:textColor="@android:color/white" />
 </LinearLayout>
