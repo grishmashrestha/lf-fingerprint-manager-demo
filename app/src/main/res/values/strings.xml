@@ -10,4 +10,5 @@
     <string name="touch_the_sensor_to_login">Touch the fingerprint sensor to login</string>
     <string name="sign_in_as_another_user">Sign in as another user</string>
     <string name="fingerprint_login_for">Fingerprint login for</string>
+    <string name="thumb_fingerprint">thumb_fingerprint</string>
 </resources>

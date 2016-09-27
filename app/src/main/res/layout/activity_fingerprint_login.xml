@@ -1,56 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="np.com.grishma.fingerprintauthenticatedlogin.FingerprintLoginActivity">
 
-    <TextView
-        android:id="@+id/text_greetings"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="32dp"
-        android:text="@string/fingerprint_login_for"
-        android:textSize="16sp" />
+        android:gravity="center"
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/text_greetings_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginBottom="32dp"
-        android:textSize="16sp" />
+        <TextView
+            android:id="@+id/text_greetings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/fingerprint_login_for"
+            android:textSize="16sp" />
 
-    <ImageView
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:layout_gravity="center"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:src="@drawable/ic_fp_40px" />
+        <TextView
+            android:id="@+id/text_greetings_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="32dp"
+            android:textSize="16sp" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:text="@string/touch_the_sensor_to_login"
-        android:textSize="16sp" />
+        <ImageView
+            android:id="@+id/image_thumb_fingerprint"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:contentDescription="@string/thumb_fingerprint"
+            android:src="@drawable/ic_fp_40px" />
 
+        <TextView
+            android:id="@+id/text_fingerprint_instruction"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:text="@string/touch_the_sensor_to_login"
+            android:textSize="16sp" />
+
+    </LinearLayout>
 
     <Button
         android:id="@+id/button_sign_in_another_user"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="180dp"
+        android:layout_alignParentBottom="true"
         android:background="@color/colorAccent"
         android:text="@string/sign_in_as_another_user"
         android:textColor="@android:color/white" />
 
-</LinearLayout>
+
+</RelativeLayout>
