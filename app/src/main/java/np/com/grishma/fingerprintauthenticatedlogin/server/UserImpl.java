@@ -1,6 +1,8 @@
 package np.com.grishma.fingerprintauthenticatedlogin.server;
 
 
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import java.io.IOException;
@@ -17,6 +19,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import np.com.grishma.fingerprintauthenticatedlogin.FingerprintAuthenticatedLogin;
 import np.com.grishma.fingerprintauthenticatedlogin.MainActivity;
 
 /**
@@ -26,6 +29,8 @@ public class UserImpl implements User {
     private static final String TAG = "UserImpl";
     private final Map<String, PublicKey> publicKeys = new HashMap<>();
     private final Set<String> receivedUsername = new HashSet<>();
+    private SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(FingerprintAuthenticatedLogin.getContext());
+
 
     @Override
     public boolean verify(String username, byte[] usernameSignature) {
@@ -58,8 +63,18 @@ public class UserImpl implements User {
 
     @Override
     public boolean verify(String username, String password) {
-        // As this is just a sample, we always assume that the password is right.
-        return true;
+        String passwordTemp = sharedPreferences.getString(username, null);
+
+        // store the password under the key "username" if there is no existing data
+        // as for now we are assuming any new username and password is valid
+        // and also store new username and password
+        // if there is existing, then compare the password with existing
+        if (passwordTemp == null) {
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString(username, password);
+            editor.apply();
+        }
+        return passwordTemp == null || passwordTemp.equals(password);
     }
 
     @Override
@@ -69,6 +84,14 @@ public class UserImpl implements User {
         }
         // We just ignore the provided password here, but in real life, it is registered to the
         // backend.
+        return true;
+    }
+
+    @Override
+    public boolean resetPasswordViaServer(String username, String newPassword) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(username, newPassword); // save password in value, username is used as key
+        editor.apply();
         return true;
     }
 }

@@ -8,7 +8,6 @@ import android.content.pm.PackageManager;
 import android.hardware.fingerprint.FingerprintManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyProperties;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -18,16 +17,11 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import java.io.IOException;
-import java.security.InvalidAlgorithmParameterException;
 import java.security.KeyPairGenerator;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
-import java.security.PublicKey;
-import java.security.cert.CertificateException;
-import java.security.spec.ECGenParameterSpec;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -117,77 +111,62 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    @OnClick(R.id.button_login)
+    @OnClick({R.id.button_login, R.id.button_forgot_password, R.id.button_forgot_password_server})
     public void setOnClick(View view) {
+        Intent intent = null;
+        switch (view.getId()) {
+            case R.id.button_login:
 
-        String usernameString = username.getText().toString();
-        String passwordString = password.getText().toString();
-        // verify user in the server
-        if (user.verify(usernameString, passwordString)) {
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.USE_FINGERPRINT) != PackageManager.PERMISSION_GRANTED) {
-                return;
-            }
-            if (checkBoxFingerprintAuth.isChecked() && fingerprintManager.hasEnrolledFingerprints()) {
-                // create a keypair
-                createKeyPair();
-                // enroll process below:
-                // send public key to server
-                enroll();
-            }
+                String usernameString = username.getText().toString();
+                String passwordString = password.getText().toString();
+
+                // verify user in the server
+                if (user.verify(usernameString, passwordString)) {
+                    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.USE_FINGERPRINT) != PackageManager.PERMISSION_GRANTED) {
+                        return;
+                    }
+
+                    if (checkBoxFingerprintAuth.isChecked() && fingerprintManager.hasEnrolledFingerprints()) {
+                        // enroll process below:
+                        enroll();
+                    }
+                    intent = new Intent(this, DashboardActivity.class);
+                    intent.putExtra("username", usernameString);
+                } else {
+                    Toast.makeText(MainActivity.this, "Wrong credentials", Toast.LENGTH_SHORT).show();
+                }
+                break;
+
+            case R.id.button_forgot_password:
+                intent = new Intent(this, ForgotPasswordActivity.class);
+                Toast.makeText(MainActivity.this, "Reset password via app", Toast.LENGTH_SHORT).show();
+                break;
+
+            case R.id.button_forgot_password_server:
+                Toast.makeText(MainActivity.this, "Reset password via server", Toast.LENGTH_SHORT).show();
+                intent = new Intent(this, ForgotPasswordViaServerActivity.class);
+                break;
         }
 
-        Intent intent = new Intent(this, DashboardActivity.class);
-        intent.putExtra("username", usernameString);
-        startActivity(intent);
-        finish();
-    }
-
-    private void enroll() {
-        try {
-            // Set the alias of the entry in Android KeyStore where the key will appear
-            // and the constrains (purposes) in the constructor of the Builder
-            keyStore.load(null);
-            PublicKey publicKey = keyStore.getCertificate(KEY_NAME).getPublicKey();
-
-            if (user.enroll("username", "password", publicKey)) {
-                // save on shared preferences
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putBoolean("fingerprintEnabled", true);
-                editor.putString("username", username.getText().toString());
-                editor.apply();
-            }
-        } catch (CertificateException | NoSuchAlgorithmException | IOException | KeyStoreException e) {
-            e.printStackTrace();
+        if (intent != null) {
+            startActivity(intent);
         }
+
+        if (intent != null && view.getId() == R.id.button_login)
+            finish();
     }
 
-    /**
-     * Generates an asymmetric key pair in the Android Keystore. Every use of the private key must
-     * be authorized by the user authenticating with fingerprint. Public key use is unrestricted.
-     */
-    public void createKeyPair() {
-        // The enrolling flow for fingerprint. This is where you ask the user to set up fingerprint
-        // for your flow. Use of keys is necessary if you need to know if the set of
-        // enrolled fingerprints has changed.
-        // The enrolling flow for fingerprint. This is where you ask the user to set up fingerprint
-        // for your flow. Use of keys is necessary if you need to know if the set of
-        // enrolled fingerprints has changed.
-        try {
-            // Set the alias of the entry in Android KeyStore where the key will appear
-            // and the constrains (purposes) in the constructor of the Builder
-            keyPairGenerator.initialize(
-                    new KeyGenParameterSpec.Builder(KEY_NAME,
-                            KeyProperties.PURPOSE_SIGN)
-                            .setDigests(KeyProperties.DIGEST_SHA256)
-                            .setAlgorithmParameterSpec(new ECGenParameterSpec("secp256r1"))
-                            // Require the user to authenticate with a fingerprint to authorize
-                            // every use of the private key
-                            .setUserAuthenticationRequired(true)
-                            .build());
-            keyPairGenerator.generateKeyPair();
-        } catch (InvalidAlgorithmParameterException e) {
-            throw new RuntimeException(e);
-        }
+    public void enroll() {
+        // no implementation of public key in server
+        String usernameTemp = username.getText().toString();
+        String passwordTemp = password.getText().toString();
+        // save on shared preferences
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("fingerprintEnabled", true);
+        editor.putString("usernameForFingerprint", usernameTemp);
+        editor.putString("passwordForFingerprint", passwordTemp);
+        editor.apply();
     }
+
 }
 

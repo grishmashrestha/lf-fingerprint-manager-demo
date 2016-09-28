@@ -38,5 +38,7 @@ public interface User {
      * @return true if the enrollment was successful, false otherwise
      */
     boolean enroll(String username, String password, PublicKey publicKey);
+    
+    boolean resetPasswordViaServer(String username, String newPassword);
 }
 
