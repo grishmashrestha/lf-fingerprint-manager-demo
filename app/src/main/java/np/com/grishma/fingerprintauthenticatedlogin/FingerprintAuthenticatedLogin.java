@@ -5,6 +5,10 @@ import android.content.Context;
 
 public class FingerprintAuthenticatedLogin extends Application {
 
+    public static final String FINGERPRINT_ENABLED = "fingerprintEnabled";
+    public static final String FINGERPRINT_ENABLED_USERNAME = "usernameForFingerprint";
+    public static final String FINGERPRINT_ENABLED_PASSWORD = "passwordForFingerprint";
+
     private static Context context;
 
     @Override

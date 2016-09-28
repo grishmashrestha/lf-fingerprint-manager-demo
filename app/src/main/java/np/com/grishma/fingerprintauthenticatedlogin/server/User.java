@@ -38,7 +38,15 @@ public interface User {
      * @return true if the enrollment was successful, false otherwise
      */
     boolean enroll(String username, String password, PublicKey publicKey);
-    
+
+    /**
+     * Resets password for the given username
+     *
+     * @param username    the unique identifier of the user within the app including server side
+     *                    implementation
+     * @param newPassword the new password for the user for the server side
+     * @return true if the password was successfully updated
+     */
     boolean resetPasswordViaServer(String username, String newPassword);
 }
 

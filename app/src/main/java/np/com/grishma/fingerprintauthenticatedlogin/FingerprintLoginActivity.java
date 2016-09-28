@@ -43,7 +43,7 @@ public class FingerprintLoginActivity extends AppCompatActivity implements Finge
         FingerprintManager fingerprintManager = getSystemService(FingerprintManager.class);
 
         // set greetings text showing which user had last enabled the fingerprint authentication for login
-        textGreetings.setText(sharedPreferences.getString("usernameForFingerprint", ""));
+        textGreetings.setText(sharedPreferences.getString(FingerprintAuthenticatedLogin.FINGERPRINT_ENABLED_USERNAME, ""));
 
         // start listener for fingerprint authentication, authenticate null
         handler.startAuth(fingerprintManager, null);
@@ -52,8 +52,8 @@ public class FingerprintLoginActivity extends AppCompatActivity implements Finge
     @Override
     public void onAuthenticated() {
         // new code without implementation of asymmetric keys
-        String username = sharedPreferences.getString("usernameForFingerprint", null);
-        String password = sharedPreferences.getString("passwordForFingerprint", null);
+        String username = sharedPreferences.getString(FingerprintAuthenticatedLogin.FINGERPRINT_ENABLED_USERNAME, null);
+        String password = sharedPreferences.getString(FingerprintAuthenticatedLogin.FINGERPRINT_ENABLED_PASSWORD, null);
 
         if (username != null) {
             if (user.verify(username, password)) {
@@ -80,8 +80,8 @@ public class FingerprintLoginActivity extends AppCompatActivity implements Finge
     public void setOnClick(View view) {
         // redirect to normal login page if another user decides to login
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean("fingerprintEnabled", false);
-        editor.putString("usernameForFingerprint", null);
+        editor.putBoolean(FingerprintAuthenticatedLogin.FINGERPRINT_ENABLED, false);
+        editor.putString(FingerprintAuthenticatedLogin.FINGERPRINT_ENABLED_USERNAME, null);
         editor.apply();
 
         startActivity(new Intent(this, MainActivity.class));

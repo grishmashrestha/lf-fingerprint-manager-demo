@@ -8,7 +8,6 @@ import android.content.pm.PackageManager;
 import android.hardware.fingerprint.FingerprintManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.security.keystore.KeyProperties;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -16,12 +15,6 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
-
-import java.security.KeyPairGenerator;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -48,11 +41,8 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.checkbox_fingerprint_authentication)
     CheckBox checkBoxFingerprintAuth;
 
-    private KeyStore keyStore;
-    private KeyPairGenerator keyPairGenerator;
     private SharedPreferences sharedPreferences;
     private User user = new UserImpl();
-    private KeyguardManager keyguardManager;
     private FingerprintManager fingerprintManager;
 
     @Override
@@ -62,23 +52,9 @@ public class MainActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         // initialize required parameters
-        keyguardManager = getSystemService(KeyguardManager.class);
+        KeyguardManager keyguardManager = getSystemService(KeyguardManager.class);
         fingerprintManager = getSystemService(FingerprintManager.class);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-
-        // get an instance of keystore
-        try {
-            keyStore = KeyStore.getInstance("AndroidKeyStore");
-        } catch (KeyStoreException e) {
-            throw new RuntimeException("Failed to get an instance of KeyStore", e);
-        }
-
-        // get an instance of keypair generator to create asymmetric key pairs, i.e. public key and private key
-        try {
-            keyPairGenerator = KeyPairGenerator.getInstance(KeyProperties.KEY_ALGORITHM_EC, "AndroidKeyStore");
-        } catch (NoSuchAlgorithmException | NoSuchProviderException e) {
-            throw new RuntimeException("Failed to get an instance of KeyPairGenerator", e);
-        }
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.USE_FINGERPRINT) != PackageManager.PERMISSION_GRANTED) {
             Toast.makeText(MainActivity.this, "Please grant permission for Fingerprint access", Toast.LENGTH_SHORT).show();
@@ -105,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        if (sharedPreferences.getBoolean("fingerprintEnabled", false)) {
+        if (sharedPreferences.getBoolean(FingerprintAuthenticatedLogin.FINGERPRINT_ENABLED, false)) {
             startActivity(new Intent(this, FingerprintLoginActivity.class));
             finish();
         }
@@ -127,23 +103,23 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     if (checkBoxFingerprintAuth.isChecked() && fingerprintManager.hasEnrolledFingerprints()) {
-                        // enroll process below:
-                        enroll();
+                        // enroll process below
+                        enroll(usernameString, passwordString);
                     }
                     intent = new Intent(this, DashboardActivity.class);
                     intent.putExtra("username", usernameString);
                 } else {
-                    Toast.makeText(MainActivity.this, "Wrong credentials", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, R.string.message_wrong_credentials, Toast.LENGTH_SHORT).show();
                 }
                 break;
 
             case R.id.button_forgot_password:
                 intent = new Intent(this, ForgotPasswordActivity.class);
-                Toast.makeText(MainActivity.this, "Reset password via app", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, R.string.message_reset_password_via_app, Toast.LENGTH_SHORT).show();
                 break;
 
             case R.id.button_forgot_password_server:
-                Toast.makeText(MainActivity.this, "Reset password via server", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, R.string.message_reset_password_via_server, Toast.LENGTH_SHORT).show();
                 intent = new Intent(this, ForgotPasswordViaServerActivity.class);
                 break;
         }
@@ -156,15 +132,25 @@ public class MainActivity extends AppCompatActivity {
             finish();
     }
 
-    public void enroll() {
-        // no implementation of public key in server
-        String usernameTemp = username.getText().toString();
-        String passwordTemp = password.getText().toString();
+    /**
+     * Register the username and password for fingerprint authentication in user's current device
+     * For demo purpose, it is saved in shared preference under
+     * the keys "usernameForFingerprint" for username
+     * and "passwordForFingerprint" for password
+     * Also, another flag "fingerprintEnabled" is set to true, so that next time a user
+     * logs out and tries to login, the app remembers the last user to allow fingerprint auth for login
+     * and shows {@link FingerprintLoginActivity}
+     * instead of normal username/password login page {@link MainActivity}
+     *
+     * @param usernameTemp username of the user that wants fingerprint auth
+     * @param passwordTemp password of the user that wants fingerprint auth
+     */
+    public void enroll(String usernameTemp, String passwordTemp) {
         // save on shared preferences
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean("fingerprintEnabled", true);
-        editor.putString("usernameForFingerprint", usernameTemp);
-        editor.putString("passwordForFingerprint", passwordTemp);
+        editor.putBoolean(FingerprintAuthenticatedLogin.FINGERPRINT_ENABLED, true);
+        editor.putString(FingerprintAuthenticatedLogin.FINGERPRINT_ENABLED_USERNAME, usernameTemp);
+        editor.putString(FingerprintAuthenticatedLogin.FINGERPRINT_ENABLED_PASSWORD, passwordTemp);
         editor.apply();
     }
 

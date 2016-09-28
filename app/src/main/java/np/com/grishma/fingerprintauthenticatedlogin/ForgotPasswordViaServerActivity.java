@@ -13,6 +13,9 @@ import butterknife.OnClick;
 import np.com.grishma.fingerprintauthenticatedlogin.server.User;
 import np.com.grishma.fingerprintauthenticatedlogin.server.UserImpl;
 
+/**
+ * An activity to that provides user interface to simulate password resetting feature for a user as in web page
+ */
 public class ForgotPasswordViaServerActivity extends AppCompatActivity {
 
     @BindView(R.id.edit_username)
@@ -34,11 +37,13 @@ public class ForgotPasswordViaServerActivity extends AppCompatActivity {
         String passwordTemp = newPassword.getText().toString();
 
         User user = new UserImpl();
+        // reset password in server
+        // currently update the params in sharedPreferences itself
         if (user.resetPasswordViaServer(usernameTemp, passwordTemp)) {
-            Toast.makeText(ForgotPasswordViaServerActivity.this, "Password successfully reset", Toast.LENGTH_SHORT).show();
+            Toast.makeText(ForgotPasswordViaServerActivity.this, getString(R.string.message_password_reset_success), Toast.LENGTH_SHORT).show();
             startActivity(new Intent(this, MainActivity.class));
         } else {
-            Toast.makeText(ForgotPasswordViaServerActivity.this, "Password could not be reset", Toast.LENGTH_SHORT).show();
+            Toast.makeText(ForgotPasswordViaServerActivity.this, getString(R.string.message_password_reset_failure), Toast.LENGTH_SHORT).show();
         }
     }
 }
