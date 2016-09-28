@@ -40,12 +40,17 @@ public class FingerprintLoginActivity extends AppCompatActivity implements Finge
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         handler = new FingerprintHandler(this);
-        FingerprintManager fingerprintManager = getSystemService(FingerprintManager.class);
 
         // set greetings text showing which user had last enabled the fingerprint authentication for login
         textGreetings.setText(sharedPreferences.getString(FingerprintAuthenticatedLogin.FINGERPRINT_ENABLED_USERNAME, ""));
 
         // start listener for fingerprint authentication, authenticate null
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        FingerprintManager fingerprintManager = getSystemService(FingerprintManager.class);
         handler.startAuth(fingerprintManager, null);
     }
 
